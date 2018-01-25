@@ -1,0 +1,8 @@
+rm -rf a.out
+g++ --std=c++1z \
+	-Iinclude \
+	src/main.cpp \
+	src/Events.cpp \
+	src/RunExecutable.cpp
+
+./a.out

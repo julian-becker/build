@@ -1,5 +1,5 @@
 rm -rf a.out
-g++ --std=c++1z \
+g++ -g --std=c++1z \
 	-Iinclude \
 	src/main.cpp \
 	src/Events.cpp \

@@ -13,11 +13,13 @@ namespace {
 
     struct EventImpl final : Event<char>::Concept {
         std::string m_exe;
+        std::vector<std::string> m_args;
         static constexpr int PIPE_READ_END=0;
         static constexpr int PIPE_WRITE_END=1;
 
-        EventImpl(std::string exe)
+        EventImpl(std::string exe, std::vector<std::string> args)
             : m_exe{std::move(exe)}
+            , m_args{std::move(args)}
         {}
 
         Canceler subscribe(Listener<char> listener) override {
@@ -62,8 +64,18 @@ namespace {
             close(fd[PIPE_READ_END]);
             close(fd[PIPE_WRITE_END]);
 
+            auto argvp = new char const*[m_args.size() + 2u];
+            argvp[0] = m_exe.c_str();
+
+            for(std::size_t i = 0; i < m_args.size(); ++i) {
+                argvp[i+1u] = m_args[i].c_str();
+            }
+
+            argvp[m_args.size()+1u] = (char const*)nullptr;
+
             // child process
-            execlp(m_exe.c_str(), m_exe.c_str(), "--help", (char*)nullptr);
+            execvp(m_exe.c_str(), (char* const*) argvp);
+
             // no return unless error
             throw std::error_code(errno, std::system_category());
         }
@@ -72,6 +84,6 @@ namespace {
 }
 
 
-Event<char> System::runExecutable(std::string exe) {
-    return { std::make_unique<EventImpl>(std::move(exe)) };
+Event<char> System::runExecutable(std::string exe, std::vector<std::string> args) {
+    return { std::make_unique<EventImpl>(std::move(exe), std::move(args)) };
 }

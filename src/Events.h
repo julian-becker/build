@@ -5,6 +5,20 @@
 #include <functional>
 #include <future>
 #include <chrono>
+#include <unordered_set>
+#include <unordered_map>
+#include <memory>
+#include <utility>
+#include <queue>
+#include <type_traits>
+#include <typeindex>
+#include <iostream>
+#include <list>
+#include <vector>
+#include <map>
+#include <set>
+#include <utility> /// for std::pair
+#include <stack>
 
 namespace Events {
 
